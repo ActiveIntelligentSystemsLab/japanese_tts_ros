@@ -29,7 +29,7 @@ class JapaneseTextToSpeech:
         start_time = rospy.Time.now()
 
         self.write_input_text(goal.text)
-        self.generate_voice()
+        self.generate_voice(goal.speed_rate)
         self.play_voice()
 
         end_time = rospy.Time.now()
@@ -45,13 +45,13 @@ class JapaneseTextToSpeech:
         input_text_file.write(input_text)
         input_text_file.close()
     
-    def generate_voice(self):
+    def generate_voice(self, speed_rate):
         feedback = japanese_text_to_speech.msg.SpeakFeedback()
         feedback.state = japanese_text_to_speech.msg.SpeakFeedback.GENERATING_VOICE
         self._action_server.publish_feedback(feedback)
 
         rospy.loginfo('Converting text to wav file...')
-        command = 'open_jtalk -x ' + self._dictionary_dir + ' -m ' + self._hts_voice_file + ' -ow ' + self._GENERATED_VOICE_FILE + ' ' + self._INPUT_TEXT_FILE
+        command = 'open_jtalk -x ' + self._dictionary_dir + ' -m ' + self._hts_voice_file + ' -ow ' + self._GENERATED_VOICE_FILE + ' -r ' + str(speed_rate) + ' ' + self._INPUT_TEXT_FILE
         rospy.loginfo('Send command: %s', command)
         os.system(command)
 

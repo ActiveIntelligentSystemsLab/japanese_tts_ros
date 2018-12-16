@@ -1,5 +1,8 @@
 # Goal
 string text
+
+# Speak speed, high value is fast
+# Normal is 1.0
 float64 speed_rate
 ---
 # Result

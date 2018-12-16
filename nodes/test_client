@@ -9,6 +9,7 @@ if __name__ == '__main__':
     rospy.init_node('japanese_tts_test_client')
     action_name = rospy.get_param('~action_name', 'japanese_text_to_speech')
     text = rospy.get_param('~text', 'テスト')
+    speed_rate = rospy.get_param('~speed_rate', 0.5)
 
     simple_client = actionlib.SimpleActionClient(action_name, japanese_text_to_speech.msg.SpeakAction)
 
@@ -18,4 +19,5 @@ if __name__ == '__main__':
     rospy.loginfo('Sending goal to server')
     goal = japanese_text_to_speech.msg.SpeakGoal()
     goal.text = text
+    goal.speed_rate = speed_rate
     simple_client.send_goal_and_wait(goal)
