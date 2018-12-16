@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>japanese_text_to_speech</name>
-  <version>0.0.0</version>
+  <version>0.1.0</version>
   <description>The japanese_text_to_speech package</description>
 
   <maintainer email="fujimoto@aisl.cs.tut.ac.jp">Hironori Fujimoto</maintainer>
