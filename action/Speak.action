@@ -1,0 +1,11 @@
+# Goal
+string text
+float64 speed_rate
+---
+# Result
+time elapsed_time
+---
+# Feedback
+uint8 GENERATING_VOICE=0
+uint8 PLAYING_VOICE=1
+uint8 state

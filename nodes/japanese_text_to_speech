@@ -1,0 +1,71 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import os
+import os.path
+
+import rospy
+import actionlib
+import japanese_text_to_speech.msg
+
+class JapaneseTextToSpeech:
+    _TEMPORALY_DIR = '/tmp/japanese_text_to_speech'
+    _INPUT_TEXT_FILE = _TEMPORALY_DIR + '/input_text'
+    _GENERATED_VOICE_FILE = _TEMPORALY_DIR + '/generated_voice.wav'
+
+    def __init__(self):
+        self._action_name = rospy.get_param('~action_name', 'japanese_text_to_speech')
+        self._dictionary_dir = rospy.get_param('~dictionary_dir', '/var/lib/mecab/dic/open-jtalk/naist-jdic')
+        self._hts_voice_file = rospy.get_param('~hts_voice_file', '/usr/share/hts-voice/nitech-jp-atr503-m001/nitech_jp_atr503_m001.htsvoice')
+        self._player_command = rospy.get_param('~player_command', 'aplay')
+
+        if not os.path.isdir(self._TEMPORALY_DIR):
+            os.mkdir(self._TEMPORALY_DIR)
+
+        self._action_server = actionlib.SimpleActionServer(self._action_name, japanese_text_to_speech.msg.SpeakAction, execute_cb=self.execute_callback, auto_start=False)
+        self._action_server.start()
+
+    def execute_callback(self, goal):
+        start_time = rospy.Time.now()
+
+        self.write_input_text(goal.text)
+        self.generate_voice()
+        self.play_voice()
+
+        end_time = rospy.Time.now()
+        elapsed_time = end_time - start_time
+
+        result = japanese_text_to_speech.msg.SpeakResult()
+        result.elapsed_time = elapsed_time
+        self._action_server.set_succeeded(result)
+
+    def write_input_text(self, input_text):
+        rospy.loginfo('Input text: %s', input_text)
+        input_text_file = open(self._INPUT_TEXT_FILE, 'w')
+        input_text_file.write(input_text)
+        input_text_file.close()
+    
+    def generate_voice(self):
+        feedback = japanese_text_to_speech.msg.SpeakFeedback()
+        feedback.state = japanese_text_to_speech.msg.SpeakFeedback.GENERATING_VOICE
+        self._action_server.publish_feedback(feedback)
+
+        rospy.loginfo('Converting text to wav file...')
+        command = 'open_jtalk -x ' + self._dictionary_dir + ' -m ' + self._hts_voice_file + ' -ow ' + self._GENERATED_VOICE_FILE + ' ' + self._INPUT_TEXT_FILE
+        rospy.loginfo('Send command: %s', command)
+        os.system(command)
+
+    def play_voice(self):
+        feedback = japanese_text_to_speech.msg.SpeakFeedback()
+        feedback.state = japanese_text_to_speech.msg.SpeakFeedback.PLAYING_VOICE
+        self._action_server.publish_feedback(feedback)
+
+        rospy.loginfo('Playing wav file...')
+        command = self._player_command + ' ' + self._GENERATED_VOICE_FILE
+        rospy.loginfo('Send command: %s', command)
+        os.system(command)
+
+if __name__ == '__main__':
+    rospy.init_node('japanese_text_to_speech')
+    tts = JapaneseTextToSpeech()
+    rospy.spin()
