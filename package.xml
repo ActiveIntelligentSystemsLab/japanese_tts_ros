@@ -6,7 +6,7 @@
 
   <maintainer email="fujimoto@aisl.cs.tut.ac.jp">Hironori Fujimoto</maintainer>
   <license>TODO</license>
-  <url type="website">https://aisl-serv6.aisl.cs.tut.ac.jp:20443/b2_project/japanese_text_to_speech</url>
+  <url type="website">https://github.com/ActiveIntelligentSystemsLab/japanese_tts_ros</url>
 
   <buildtool_depend>catkin</buildtool_depend>
   <depend>actionlib</depend>
