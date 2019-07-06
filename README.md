@@ -37,7 +37,7 @@ rosrun japanese_text_to_speech test_client
 `.htsvoice` ファイルを適当な場所に設置し， `~hts_voice_file` rosparam をセットしてください．
 
 ```
-rosrun japanese_text_to_speech japanese_text_speech _hts_voice_file:='/path/to/htsvoice'
+rosrun japanese_text_to_speech japanese_text_to_speech _hts_voice_file:='/path/to/htsvoice'
 ```
 
 参考： http://mahoro-ba.net/index.php?j=1875
