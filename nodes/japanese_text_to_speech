@@ -28,16 +28,27 @@ class JapaneseTextToSpeech:
     def execute_callback(self, goal):
         start_time = rospy.Time.now()
 
+        is_succeeded = True
+
         self.write_input_text(goal.text)
-        self.generate_voice(goal.speed_rate)
-        self.play_voice()
+
+        if goal.speed_rate > 0.0:
+            self.generate_voice(goal.speed_rate)
+            self.play_voice()
+        else:
+            print("WARNING: Do not set 'speed_rate' to 0.0")
+            is_succeeded = False
 
         end_time = rospy.Time.now()
         elapsed_time = end_time - start_time
 
         result = japanese_text_to_speech.msg.SpeakResult()
         result.elapsed_time = elapsed_time
-        self._action_server.set_succeeded(result)
+        if is_succeeded:
+            self._action_server.set_succeeded(result)
+        else:
+            self._action_server.set_aborted(result)
+
 
     def write_input_text(self, input_text):
         rospy.loginfo('Input text: %s', input_text)
