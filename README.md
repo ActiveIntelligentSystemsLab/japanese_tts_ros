@@ -12,7 +12,7 @@ Open JTalkとaplayコマンドに依存しています．
 sudo apt install open-jtalk open-jtalk-mecab-naist-jdic hts-voice-nitech-jp-atr503-m001 alsa-utils
 ```
 
-catkin workspace内に設置して `catkin_make` してください．
+colcon workspace内に設置して `colcon build` してください．
 
 ## 使い方
 
@@ -20,14 +20,14 @@ catkin workspace内に設置して `catkin_make` してください．
 この node がサーバとなり，クライアントから受け取ったテキストを音声出力します．
 
 ```
-rosrun japanese_text_to_speech japanese_text_to_speech
+ros2 run japanese_text_to_speech japanese_text_to_speech
 ```
 
-この node は [actionlib](http://wiki.ros.org/actionlib) を使って実装されています．
+この node は ros2 action を使って実装されています．
 簡単なクライアントのサンプルとして `test_client` nodeを用意してあります．
 
 ```
-rosrun japanese_text_to_speech test_client
+ros2 run japanese_text_to_speech test_client
 ```
 
 ### 音声モデルの切り替え
@@ -37,7 +37,7 @@ rosrun japanese_text_to_speech test_client
 `.htsvoice` ファイルを適当な場所に設置し， `~hts_voice_file` rosparam をセットしてください．
 
 ```
-rosrun japanese_text_to_speech japanese_text_to_speech _hts_voice_file:='/path/to/htsvoice'
+ros2 run japanese_text_to_speech japanese_text_to_speech --ros-args -p hts_voice_file:='/path/to/htsvoice'
 ```
 
 #### メイ＆タクミ
@@ -55,7 +55,7 @@ unzip MMDAgent_Example-1.8.zip
 例えば，メイの幸せな声の音声モデルを利用する場合は，次のように引数を追加します．
 
 ```bash
-rosrun japanese_text_to_speech japanese_text_to_speech _hts_voice_file:='PATH_TO_UNZIPPED_FILES/MMDAgent_Example-1.8/Voice/mei/mei_happy.htsvoice'
+ros2 run japanese_text_to_speech japanese_text_to_speech --ros-args -p hts_voice_file:='PATH_TO_UNZIPPED_FILES/MMDAgent_Example-1.8/Voice/mei/mei_happy.htsvoice'
 ```
 
 参考：https://www.rcnp.osaka-u.ac.jp/~kohda/linux/espeak.html
