@@ -6,7 +6,7 @@ string text
 float64 speed_rate
 ---
 # Result
-time elapsed_time
+builtin_interfaces/Duration elapsed_time
 ---
 # Feedback
 uint8 GENERATING_VOICE=0
