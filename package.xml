@@ -8,7 +8,6 @@
   <license>TODO</license>
   <url type="website">https://github.com/ActiveIntelligentSystemsLab/japanese_tts_ros</url>
 
-<!--  <buildtool_depend>ament_python</buildtool_depend>-->
   <buildtool_depend>ament_cmake_python</buildtool_depend>
   <buildtool_depend>ament_cmake</buildtool_depend>
 
