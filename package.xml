@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package format="2">
+<package format="3">
   <name>japanese_text_to_speech</name>
   <version>0.1.0</version>
   <description>The japanese_text_to_speech package</description>
@@ -8,8 +8,22 @@
   <license>TODO</license>
   <url type="website">https://github.com/ActiveIntelligentSystemsLab/japanese_tts_ros</url>
 
-  <buildtool_depend>catkin</buildtool_depend>
+<!--  <buildtool_depend>ament_python</buildtool_depend>-->
+  <buildtool_depend>ament_cmake_python</buildtool_depend>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
   <depend>actionlib</depend>
   <depend>actionlib_msgs</depend>
-  <exec_depend>rospy</exec_depend>
+  <depend>builtin_interfaces</depend>
+  <exec_depend>rclpy</exec_depend>
+
+  <!-- for acrion file -->
+  <buildtool_depend>rosidl_default_generators</buildtool_depend>
+  <depend>action_msgs</depend>
+  <exec_depend>rosidl_default_runtime</exec_depend>
+  <member_of_group>rosidl_interface_packages</member_of_group>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
 </package>
