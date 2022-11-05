@@ -27,17 +27,17 @@ class JapaneseTextToSpeech(Node):
                 ('aplayer_command', 'aplay')
             ]
         )
-        self._action_name = self.get_parameter('action_name')
-        self._dictionary_dir = self.get_parameter('dictionary_dir')
-        self._hts_voice_file = self.get_parameter('hts_voice_file')
-        self._player_command = self.get_parameter('aplayer_command')
+        self._action_name = self.get_parameter('action_name').get_parameter_value().string_value
+        self._dictionary_dir = self.get_parameter('dictionary_dir').get_parameter_value().string_value
+        self._hts_voice_file = self.get_parameter('hts_voice_file').get_parameter_value().string_value
+        self._player_command = self.get_parameter('aplayer_command').get_parameter_value().string_value
 
         if not os.path.isdir(self._TEMPORALY_DIR):
             os.mkdir(self._TEMPORALY_DIR)
-        self._action_server = ActionServer(self, Speak, 'japanese_text_to_speech', self.execute_callback)
+        self._action_server = ActionServer(self, Speak, str(self._action_name), self.execute_callback)
 
     def execute_callback(self, goal_handle):
-        start_time = rclpy.Time.now()
+        start_time = self.get_clock().now()
 
         is_succeeded = True
 
@@ -50,11 +50,11 @@ class JapaneseTextToSpeech(Node):
             print("WARNING: Do not set 'speed_rate' to 0.0")
             is_succeeded = False
 
-        end_time = rclpy.Time.now()
+        end_time = self.get_clock().now()
         elapsed_time = end_time - start_time
 
-        result = Speak.SpeakResult()
-        result.elapsed_time = elapsed_time
+        result = Speak.Result()
+        result.elapsed_time = elapsed_time.to_msg()
 
         if is_succeeded:
             goal_handle.succeed()
@@ -65,29 +65,29 @@ class JapaneseTextToSpeech(Node):
 
 
     def write_input_text(self, input_text):
-        self.get_logger().info('Input text: %s', input_text)
+        self.get_logger().info(f'Input text: {input_text}')
         input_text_file = open(self._INPUT_TEXT_FILE, 'w')
         input_text_file.write(input_text)
         input_text_file.close()
 
     def generate_voice(self, speed_rate, goal_handle):
-        feedback = Speak.SpeakFeedback()
-        feedback.state = Speak.SpeakFeedback.GENERATING_VOICE
+        feedback = Speak.Feedback()
+        feedback.state = Speak.Feedback.GENERATING_VOICE
         goal_handle.publish_feedback(feedback)
 
         self.get_logger().info('Converting text to wav file...')
         command = 'open_jtalk -x ' + self._dictionary_dir + ' -m ' + self._hts_voice_file + ' -ow ' + self._GENERATED_VOICE_FILE + ' -r ' + str(speed_rate) + ' ' + self._INPUT_TEXT_FILE
-        self.get_logger().info('Send command: %s', command)
+        self.get_logger().info(f'Send command: {command}')
         os.system(command)
 
     def play_voice(self, goal_handle):
-        feedback = Speak.SpeakFeedback()
-        feedback.state = Speak.SpeakFeedback.PLAYING_VOICE
+        feedback = Speak.Feedback()
+        feedback.state = Speak.Feedback.PLAYING_VOICE
         goal_handle.publish_feedback(feedback)
 
         self.get_logger().info('Playing wav file...')
         command = self._player_command + ' ' + self._GENERATED_VOICE_FILE
-        self.get_logger().info('Send command: %s', command)
+        self.get_logger().info(f'Send command: {command}')
         os.system(command)
 
 
